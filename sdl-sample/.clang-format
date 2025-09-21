@@ -1,0 +1,9 @@
+---
+Language: Cpp
+Standard: c++11
+SpacesInAngles: Never
+# This ensures >> becomes > > in nested templates for C++98
+SpaceBeforeRangeBasedForLoopColon: true
+AlwaysBreakTemplateDeclarations: true
+IndentWidth: 4
+UseTab: Never
