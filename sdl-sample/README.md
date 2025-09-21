@@ -9,7 +9,7 @@ This project contains a `CMakeLists.txt` file which is utilized by `cmake` comma
 Install the necessary tools to build and `sdl2`
 
 ```sh
-brew install clang make cmake sdl2 pkg-config
+brew install clang make cmake sdl2 sdl2_image pkg-config
 ```
 
 ### Running

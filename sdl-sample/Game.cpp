@@ -6,7 +6,14 @@
 //
 
 #include "Game.hpp"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_rect.h"
+#include "SDL2/SDL_render.h"
+#include "SDL2/SDL_surface.h"
 #include <iostream>
+
+SDL_Texture *playerTexture;
+SDL_Rect srcR, destR;
 
 Game::Game() {}
 Game::~Game() {}
@@ -38,6 +45,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height,
     } else {
         this->isRunning = false;
     }
+    SDL_Surface *tempSurface = IMG_Load("assets/vest.png");
+
+    playerTexture = SDL_CreateTextureFromSurface(this->renderer, tempSurface);
+    SDL_FreeSurface(tempSurface);
 }
 
 void Game::handleEvents() {
@@ -55,13 +66,20 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    // updates variables and state
     cnt++;
+    destR.w = 64;
+    destR.h = 64;
+    if (cnt > 864) {
+        cnt = -64;
+    }
+    destR.x = cnt;
 }
+
 void Game::render() {
     SDL_RenderClear(this->renderer);
-    // this is where you render stuff
-    // based of the state
+    // this is where you render stuff, images, sprites
+
+    SDL_RenderCopy(this->renderer, playerTexture, NULL, &destR);
 
     SDL_RenderPresent(this->renderer);
 }
