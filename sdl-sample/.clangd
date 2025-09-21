@@ -4,4 +4,4 @@ CompileFlags:
     - -L/opt/homebrew/lib
     - -lSDL2
     - -lSDL2main
-    - -std=c++17
+    - -std=c++11
