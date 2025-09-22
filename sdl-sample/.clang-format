@@ -7,3 +7,9 @@ SpaceBeforeRangeBasedForLoopColon: true
 AlwaysBreakTemplateDeclarations: true
 IndentWidth: 4
 UseTab: Never
+ColumnLimit: 100
+BinPackParameters: false
+BinPackArguments: false
+
+# Additional settings that work well with the above
+AllowAllArgumentsOnNextLine: false

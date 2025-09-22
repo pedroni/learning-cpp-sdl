@@ -4,7 +4,7 @@
     {
       "label": "build and run",
       "type": "shell",
-      "command": "make myprogram/fast && ./myprogram",
+      "command": "cmake . && make myprogram/fast && ./myprogram",
       "group": {
         "kind": "build",
         "isDefault": true
