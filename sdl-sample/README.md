@@ -21,3 +21,7 @@ cmake .
 make .
 ./myprogram
 ```
+
+## Sprites & Art
+
+https://craftpix.net/ found some free sources here.

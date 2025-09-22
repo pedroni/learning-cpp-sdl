@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(myprogram)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set homebrew paths
@@ -12,7 +12,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL2_IMAGE REQUIRED SDL2_image)
 
 # Get all cpp files
-file(GLOB SOURCES "*.cpp")
+file(GLOB SOURCES "src/*.cpp")
 
 # Create executable
 add_executable(myprogram ${SOURCES})
