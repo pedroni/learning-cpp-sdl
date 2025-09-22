@@ -18,11 +18,15 @@ class Game {
 
     bool running();
 
+    // Declare as static so we can use it globally as a singleton once it is initialized
+    // In TextureManager, GameObject and any other place that we have to use we can simply do
+    // Game::renderer instead of having to delcare multiple renderer pointers everywhere
+    static SDL_Renderer *renderer;
+
   private:
     int cnt;
     bool isRunning;
     SDL_Window *window;
-    SDL_Renderer *renderer;
 };
 
 #endif /* Game_hpp */

@@ -2,7 +2,7 @@
 
 class GameObject {
   public:
-    GameObject(SDL_Renderer *ren, const char *texturesheet, int x = 0, int y = 0);
+    GameObject(const char *texturesheet, int x = 0, int y = 0);
     ~GameObject();
 
     void update();

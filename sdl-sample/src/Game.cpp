@@ -1,12 +1,13 @@
 #include "Game.hpp"
 #include "GameObject.hpp"
 #include "SDL2/SDL.h"
-#include "TextureManager.hpp"
-#include <cmath>
+#include "SDL2/SDL_render.h"
 #include <iostream>
 
 GameObject *player;
 GameObject *enemy;
+
+SDL_Renderer *Game::renderer;
 
 Game::Game() {}
 Game::~Game() {}
@@ -56,8 +57,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     //     TextureManager::LoadTexture(this->renderer,
     //     "assets/Battleground1/Pale/stones&grass.png");
 
-    player = new GameObject(this->renderer, "assets/Knight_1/Walk.png");
-    enemy = new GameObject(this->renderer, "assets/Minotaur_1/Walk.png", 128);
+    player = new GameObject("assets/Knight_1/Walk.png");
+    enemy = new GameObject("assets/Minotaur_1/Walk.png", 128);
 }
 
 void Game::handleEvents() {
