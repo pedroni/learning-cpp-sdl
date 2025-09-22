@@ -1,15 +1,22 @@
 #include "Game.hpp"
+#include "Components.hpp"
+#include "ECS.hpp"
 #include "GameObject.hpp"
 #include "Map.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
 #include <iostream>
+#include <ostream>
 
 GameObject *player;
 GameObject *enemy;
 Map *map;
 
 SDL_Renderer *Game::renderer;
+
+Manager manager;
+
+Entity &newPlayer = manager.addEntity();
 
 Game::Game() {}
 Game::~Game() {}
@@ -59,6 +66,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player = new GameObject("assets/Knight_1/Walk.png");
     enemy = new GameObject("assets/Minotaur_1/Walk.png", 128);
     map = new Map();
+
+    newPlayer.addComponent<PositionComponent>();
 }
 
 void Game::handleEvents() {
@@ -78,6 +87,10 @@ void Game::handleEvents() {
 void Game::update() {
     player->update();
     enemy->update();
+
+    manager.update();
+    std::cout << newPlayer.getComponent<PositionComponent>().x() << ","
+              << newPlayer.getComponent<PositionComponent>().y() << std::endl;
 }
 
 void Game::render() {
