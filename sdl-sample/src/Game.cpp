@@ -1,11 +1,13 @@
 #include "Game.hpp"
 #include "GameObject.hpp"
+#include "Map.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
 #include <iostream>
 
 GameObject *player;
 GameObject *enemy;
+Map *map;
 
 SDL_Renderer *Game::renderer;
 
@@ -31,11 +33,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         if (this->renderer) {
             SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
             std::cout << "Renderer created!" << std::endl;
+            this->isRunning = true;
         }
-
-        this->isRunning = true;
-    } else {
-        this->isRunning = false;
     }
 
     // bg1Texture = TextureManager::LoadTexture(this->renderer,
@@ -59,6 +58,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     player = new GameObject("assets/Knight_1/Walk.png");
     enemy = new GameObject("assets/Minotaur_1/Walk.png", 128);
+    map = new Map();
 }
 
 void Game::handleEvents() {
@@ -83,6 +83,8 @@ void Game::update() {
 void Game::render() {
     SDL_RenderClear(this->renderer);
     // this is where you render stuff, images, sprites
+
+    map->draw();
 
     player->render();
     enemy->render();

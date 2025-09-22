@@ -1,5 +1,8 @@
 #include "SDL2/SDL_render.h"
 
+#ifndef GameObject_hpp
+#define GameObject_hpp
+
 class GameObject {
   public:
     GameObject(const char *texturesheet, int x = 0, int y = 0);
@@ -17,3 +20,5 @@ class GameObject {
 
     SDL_Renderer *renderer;
 };
+
+#endif
