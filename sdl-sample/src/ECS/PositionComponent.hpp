@@ -1,23 +1,27 @@
-#ifndef Components_hpp
-#define Components_hpp
+
+#ifndef PositionComponent_hpp
+#define PositionComponent_hpp
 
 #include "ECS.hpp"
 
-// Position Component extends Component
 class PositionComponent : public Component {
   private:
-    int xPos = 0;
-    int yPos = 0;
+    int xPos;
+    int yPos;
 
   public:
-    int x() const { return this->xPos; }
-    int y() const { return this->yPos; }
-
-    // override explicitly tell the compiler that we want to override init().
-    void init() override {
+    PositionComponent() {
         this->xPos = 0;
         this->yPos = 0;
     }
+
+    PositionComponent(int x, int y) {
+        this->xPos = x;
+        this->yPos = y;
+    }
+
+    int x() const { return this->xPos; }
+    int y() const { return this->yPos; }
 
     // override is useful here so that the compiler can look if the base class "Component" `update`
     // can actually be overrided, if the base class doesn't have `virtual` in the `update` method,
@@ -32,5 +36,4 @@ class PositionComponent : public Component {
         this->yPos = y;
     }
 };
-
 #endif

@@ -1,22 +1,19 @@
 #include "Game.hpp"
-#include "Components.hpp"
-#include "ECS.hpp"
-#include "GameObject.hpp"
+#include "ECS/Components.hpp"
+#include "ECS/ECS.hpp"
 #include "Map.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
 #include <iostream>
 #include <ostream>
 
-GameObject *player;
-GameObject *enemy;
 Map *map;
 
 SDL_Renderer *Game::renderer;
 
 Manager manager;
 
-Entity &newPlayer = manager.addEntity();
+Entity &player = manager.addEntity();
 
 Game::Game() {}
 Game::~Game() {}
@@ -63,11 +60,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     //     TextureManager::LoadTexture(this->renderer,
     //     "assets/Battleground1/Pale/stones&grass.png");
 
-    player = new GameObject("assets/Knight_1/Walk.png");
-    enemy = new GameObject("assets/Minotaur_1/Walk.png", 128);
     map = new Map();
 
-    newPlayer.addComponent<PositionComponent>();
+    player.addComponent<PositionComponent>();
+    player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
 }
 
 void Game::handleEvents() {
@@ -85,12 +81,8 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    player->update();
-    enemy->update();
-
+    manager.refresh();
     manager.update();
-    std::cout << newPlayer.getComponent<PositionComponent>().x() << ","
-              << newPlayer.getComponent<PositionComponent>().y() << std::endl;
 }
 
 void Game::render() {
@@ -98,9 +90,7 @@ void Game::render() {
     // this is where you render stuff, images, sprites
 
     map->draw();
-
-    player->render();
-    enemy->render();
+    manager.draw();
 
     SDL_RenderPresent(this->renderer);
 }

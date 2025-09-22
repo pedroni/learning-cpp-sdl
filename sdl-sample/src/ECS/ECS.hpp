@@ -88,12 +88,13 @@ class Entity {
         for (std::size_t i = 0; i < this->components.size(); i++) {
             components[i]->update();
         }
+    }
+
+    void draw() {
         for (std::size_t i = 0; i < this->components.size(); i++) {
             components[i]->draw();
         }
     }
-
-    void draw() {}
 
     // const means that we're promising that this function will not modify the state
     bool isActive() const { return this->active; }
