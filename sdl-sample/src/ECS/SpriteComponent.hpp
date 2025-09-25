@@ -3,13 +3,13 @@
 
 #include "../TextureManager.hpp"
 #include "ECS.hpp"
-#include "PositionComponent.hpp"
 #include "SDL2/SDL_render.h"
+#include "TransformComponent.hpp"
 #include <iostream>
 
 class SpriteComponent : public Component {
   private:
-    PositionComponent *position;
+    TransformComponent *transform;
     SDL_Texture *texture;
     SDL_Rect srcRect, destRect;
     int step = 0;
@@ -23,7 +23,7 @@ class SpriteComponent : public Component {
     void setStep(int step) { this->step = step; }
 
     void init() override {
-        this->position = &entity->getComponent<PositionComponent>();
+        this->transform = &entity->getComponent<TransformComponent>();
 
         this->srcRect.x = this->step * 128;
         this->srcRect.y = 0;
@@ -35,8 +35,8 @@ class SpriteComponent : public Component {
     }
 
     void update() override {
-        destRect.x = position->x();
-        destRect.y = position->y();
+        destRect.x = transform->x();
+        destRect.y = transform->y();
         this->srcRect.x = this->step * 128;
     }
 

@@ -1,21 +1,21 @@
 
-#ifndef PositionComponent_hpp
-#define PositionComponent_hpp
+#ifndef TransformComponent_hpp
+#define TransformComponent_hpp
 
 #include "ECS.hpp"
 
-class PositionComponent : public Component {
+class TransformComponent : public Component {
   private:
     int xPos;
     int yPos;
 
   public:
-    PositionComponent() {
+    TransformComponent() {
         this->xPos = 0;
         this->yPos = 0;
     }
 
-    PositionComponent(int x, int y) {
+    TransformComponent(int x, int y) {
         this->xPos = x;
         this->yPos = y;
     }

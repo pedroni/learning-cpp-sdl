@@ -1,8 +1,8 @@
 #include "Game.hpp"
 #include "ECS/Components.hpp"
 #include "ECS/ECS.hpp"
-#include "ECS/PositionComponent.hpp"
 #include "ECS/SpriteComponent.hpp"
+#include "ECS/TransformComponent.hpp"
 #include "Map.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
@@ -64,7 +64,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     map = new Map();
 
-    player.addComponent<PositionComponent>(0, 100);
+    player.addComponent<TransformComponent>(0, 100);
     player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
 }
 
@@ -86,7 +86,7 @@ void Game::update() {
     manager.refresh();
     manager.update();
 
-    if (player.getComponent<PositionComponent>().x() > 100) {
+    if (player.getComponent<TransformComponent>().x() > 100) {
         player.getComponent<SpriteComponent>().setStep(2);
     }
 }
