@@ -6,6 +6,7 @@
 #include "Map.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
+#include "Vector2D.hpp"
 #include <iostream>
 #include <ostream>
 
@@ -64,7 +65,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     map = new Map();
 
-    player.addComponent<TransformComponent>(0, 100);
+    player.addComponent<TransformComponent>();
     player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
 }
 

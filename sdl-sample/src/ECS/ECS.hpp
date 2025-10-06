@@ -34,9 +34,8 @@ inline ComponentID getComponentTypeID() {
 
 template <typename T>
 inline ComponentID getComponentTypeID() {
-    // ⚠️ in here the id is not incremented. it retrieves the available of typename T
-    // so if we call
-    // take these calls for example:
+    // ⚠️ in here the id is not incremented. it retrieves the available of typename T - I assume this
+    // happens because of the function signature - so if we call take these calls for example:
     // getComponentTypeID<First>(); <- returns 0
     // getComponentTypeID<First>(); <- returns 0 // same value as before because of T
     // getComponentTypeID<Second>(); <- returns 1 a different T

@@ -1,5 +1,15 @@
 {
   "format_on_save": "on",
+  "agent": {
+    "default_model": {
+      "provider": "deepseek",
+      "model": "deepseek-chat"
+    },
+    "inline_assistant_model": {
+      "provider": "deepseek",
+      "model": "deepseek-chat"
+    }
+  },
   "lsp": {
     "clangd": {
       "binary": {

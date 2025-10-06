@@ -5,7 +5,6 @@
 #include "ECS.hpp"
 #include "SDL2/SDL_render.h"
 #include "TransformComponent.hpp"
-#include <iostream>
 
 class SpriteComponent : public Component {
   private:
@@ -35,8 +34,8 @@ class SpriteComponent : public Component {
     }
 
     void update() override {
-        destRect.x = transform->x();
-        destRect.y = transform->y();
+        destRect.x = (int)transform->position.x;
+        destRect.y = (int)transform->position.y;
         this->srcRect.x = this->step * 128;
     }
 
