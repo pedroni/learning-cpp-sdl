@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "ECS/Components.hpp"
 #include "ECS/ECS.hpp"
+#include "ECS/KeyboardController.hpp"
 #include "ECS/SpriteComponent.hpp"
 #include "ECS/TransformComponent.hpp"
 #include "Map.hpp"
@@ -13,6 +14,7 @@
 Map *map;
 
 SDL_Renderer *Game::renderer;
+SDL_Event *Game::event = new SDL_Event();
 
 Manager manager;
 
@@ -67,13 +69,13 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     player.addComponent<TransformComponent>();
     player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
+    player.addComponent<KeyboardController>();
 }
 
 void Game::handleEvents() {
-    SDL_Event event;
-    SDL_PollEvent(&event);
+    SDL_PollEvent(Game::event);
 
-    switch (event.type) {
+    switch (Game::event->type) {
     case SDL_QUIT:
         isRunning = false;
         break;
@@ -87,8 +89,14 @@ void Game::update() {
     manager.refresh();
     manager.update();
 
-    if (player.getComponent<TransformComponent>().x() > 100) {
+    if (player.getComponent<TransformComponent>().position.x > 100) {
         player.getComponent<SpriteComponent>().setStep(2);
+    } else {
+        player.getComponent<SpriteComponent>().setStep(1);
+    }
+
+    if (player.getComponent<TransformComponent>().position.x > 1000) {
+        player.getComponent<TransformComponent>().position.x = 0;
     }
 }
 

@@ -2,6 +2,7 @@
 #ifndef Game_hpp
 #define Game_hpp
 
+#include "SDL2/SDL_events.h"
 #include "SDL2/SDL_render.h"
 
 class Game {
@@ -22,6 +23,7 @@ class Game {
     // In TextureManager, GameObject and any other place that we have to use we can simply do
     // Game::renderer instead of having to delcare multiple renderer pointers everywhere
     static SDL_Renderer *renderer;
+    static SDL_Event *event;
 
   private:
     int cnt;
