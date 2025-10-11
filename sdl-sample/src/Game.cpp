@@ -1,4 +1,6 @@
 #include "Game.hpp"
+#include "Collision.hpp"
+#include "ECS/ColliderComponent.hpp"
 #include "ECS/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "ECS/KeyboardController.hpp"
@@ -19,6 +21,7 @@ SDL_Event *Game::event = new SDL_Event();
 Manager manager;
 
 Entity &player = manager.addEntity();
+Entity &wall = manager.addEntity();
 
 Game::Game() {}
 Game::~Game() {}
@@ -70,6 +73,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<TransformComponent>();
     player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
     player.addComponent<KeyboardController>();
+    player.addComponent<ColliderComponent>("player");
+
+    wall.addComponent<TransformComponent>(300.0f, 300.0f, 20, 200, 1);
+    wall.addComponent<SpriteComponent>("assets/dirt.png");
+    wall.addComponent<ColliderComponent>("wall");
 }
 
 void Game::handleEvents() {
@@ -88,6 +96,12 @@ void Game::handleEvents() {
 void Game::update() {
     manager.refresh();
     manager.update();
+    if (Collision::AABB(player.getComponent<ColliderComponent>().collider,
+                        wall.getComponent<ColliderComponent>().collider)) {
+        // what happens? how cna i make it stop moving???
+        std::cout << "Oh god you hit a all" << std::endl;
+        player.getComponent<TransformComponent>().velocity * -1;
+    }
 
     if (player.getComponent<TransformComponent>().position.x > 100) {
         player.getComponent<SpriteComponent>().setStep(2);

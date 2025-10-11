@@ -1,4 +1,5 @@
 #include "Map.hpp"
+#include "SDL2/SDL_render.h"
 #include "TextureManager.hpp"
 
 const int W = 0;
@@ -83,6 +84,12 @@ Map::Map() {
     this->dest.x = this->dest.y = 0;
     this->dest.w = 32;
     this->dest.h = 32;
+}
+
+Map::~Map() {
+    SDL_DestroyTexture(grass);
+    SDL_DestroyTexture(water);
+    SDL_DestroyTexture(dirt);
 }
 
 void Map::load(int arr[20][25]) {

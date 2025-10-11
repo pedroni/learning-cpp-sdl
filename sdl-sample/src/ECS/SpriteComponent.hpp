@@ -17,6 +17,8 @@ class SpriteComponent : public Component {
     // SpriteComponent() = default;
     SpriteComponent(const char *path) { this->setTexture(path); }
 
+    ~SpriteComponent() { SDL_DestroyTexture(this->texture); }
+
     // used to swap texture
     void setTexture(const char *path) { this->texture = TextureManager::LoadTexture(path); }
     void setStep(int step) { this->step = step; }
@@ -27,15 +29,25 @@ class SpriteComponent : public Component {
         this->srcRect.x = this->step * 128;
         this->srcRect.y = 0;
 
-        this->srcRect.w = this->srcRect.h = 128;
+        this->srcRect.w = this->transform->width;
+        this->srcRect.h = this->transform->height;
 
         this->destRect.x = this->destRect.y = 0;
-        this->destRect.w = this->destRect.h = 128;
+
+        this->destRect.w = this->transform->width * this->transform->scale;
+        this->destRect.h = this->transform->height * this->transform->scale;
     }
 
     void update() override {
-        destRect.x = (int)transform->position.x;
-        destRect.y = (int)transform->position.y;
+        // the rect x and y are int. and the transform are floats. these are casted automatically i
+        // dont  know whether i should cast them or not, they just work like t his without issues
+        // though. so i dont think i have to care about it though
+        //
+        // in the videos from Lets Make Games he casts it using static_cast<int>, he says its easier
+        // for debug but i have no idea;
+
+        destRect.x = transform->position.x;
+        destRect.y = transform->position.y;
         this->srcRect.x = this->step * 128;
     }
 

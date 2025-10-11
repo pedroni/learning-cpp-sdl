@@ -10,16 +10,26 @@ class TransformComponent : public Component {
     Vector2D position;
     Vector2D velocity;
 
+    int width = 128;
+    int height = 128;
+    int scale = 1;
+
     int speed = 3;
 
-    TransformComponent() {
-        this->position.x = 0.0f;
-        this->position.y = 0.0f;
-    }
+    TransformComponent() { this->position.Zero(); }
 
     TransformComponent(float x, float y) {
         this->position.x = x;
         this->position.y = y;
+    }
+
+    TransformComponent(float x, float y, int w, int h, int scale) {
+        this->position.x = x;
+        this->position.y = y;
+
+        this->width = w;
+        this->height = h;
+        this->scale = scale;
     }
 
     void init() override {
