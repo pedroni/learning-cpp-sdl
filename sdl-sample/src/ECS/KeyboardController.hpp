@@ -40,10 +40,11 @@ class KeyboardController : public Component {
             this->transform->velocity.x = 1;
         }
 
-        if (Game::event->type == SDL_KEYUP) {
+        if (keyboardState[SDL_SCANCODE_W] == 0 && keyboardState[SDL_SCANCODE_S] == 0) {
             this->transform->velocity.y = 0;
-            this->transform->velocity.x = 0;
-            this->transform->velocity.y = 0;
+        }
+
+        if (keyboardState[SDL_SCANCODE_A] == 0 && keyboardState[SDL_SCANCODE_D] == 0) {
             this->transform->velocity.x = 0;
         }
     }

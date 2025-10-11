@@ -14,7 +14,6 @@ class SpriteComponent : public Component {
     int step = 0;
 
   public:
-    // SpriteComponent() = default;
     SpriteComponent(const char *path) { this->setTexture(path); }
 
     ~SpriteComponent() { SDL_DestroyTexture(this->texture); }

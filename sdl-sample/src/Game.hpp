@@ -4,6 +4,9 @@
 
 #include "SDL2/SDL_events.h"
 #include "SDL2/SDL_render.h"
+#include <vector>
+
+class ColliderComponent;
 
 class Game {
   public:
@@ -24,6 +27,8 @@ class Game {
     // Game::renderer instead of having to delcare multiple renderer pointers everywhere
     static SDL_Renderer *renderer;
     static SDL_Event *event;
+
+    static std::vector<ColliderComponent *> colliders;
 
   private:
     int cnt;

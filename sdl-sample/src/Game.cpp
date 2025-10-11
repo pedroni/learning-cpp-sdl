@@ -5,6 +5,7 @@
 #include "ECS/ECS.hpp"
 #include "ECS/KeyboardController.hpp"
 #include "ECS/SpriteComponent.hpp"
+#include "ECS/TileComponent.hpp"
 #include "ECS/TransformComponent.hpp"
 #include "Map.hpp"
 #include "SDL2/SDL.h"
@@ -20,8 +21,14 @@ SDL_Event *Game::event = new SDL_Event();
 
 Manager manager;
 
+std::vector<ColliderComponent *> Game::colliders;
+
 Entity &player = manager.addEntity();
 Entity &wall = manager.addEntity();
+
+Entity &tile0 = manager.addEntity();
+Entity &tile1 = manager.addEntity();
+Entity &tile2 = manager.addEntity();
 
 Game::Game() {}
 Game::~Game() {}
@@ -75,6 +82,14 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
 
+    tile0.addComponent<TileComponent>(300, 300, 32, 32, 0);
+
+    tile1.addComponent<TileComponent>(350, 350, 32, 32, 1);
+    tile1.addComponent<ColliderComponent>("dirt");
+
+    tile2.addComponent<TileComponent>(250, 250, 32, 32, 2);
+    tile2.addComponent<ColliderComponent>("grass");
+
     wall.addComponent<TransformComponent>(300.0f, 300.0f, 20, 200, 1);
     wall.addComponent<SpriteComponent>("assets/dirt.png");
     wall.addComponent<ColliderComponent>("wall");
@@ -96,11 +111,11 @@ void Game::handleEvents() {
 void Game::update() {
     manager.refresh();
     manager.update();
-    if (Collision::AABB(player.getComponent<ColliderComponent>().collider,
-                        wall.getComponent<ColliderComponent>().collider)) {
-        // what happens? how cna i make it stop moving???
-        std::cout << "Oh god you hit a all" << std::endl;
-        player.getComponent<TransformComponent>().velocity * -1;
+    for (int i = 0; i < this->colliders.size(); i++) {
+        if (Collision::AABB(player.getComponent<ColliderComponent>(), *this->colliders[i])) {
+            // player.getComponent<TransformComponent>().velocity * -1;
+        }
+        // std::cout << "hit something" << std::endl;
     }
 
     if (player.getComponent<TransformComponent>().position.x > 100) {
@@ -118,7 +133,7 @@ void Game::render() {
     SDL_RenderClear(this->renderer);
     // this is where you render stuff, images, sprites
 
-    map->draw();
+    // map->draw();
     manager.draw();
 
     SDL_RenderPresent(this->renderer);

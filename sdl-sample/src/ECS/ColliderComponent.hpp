@@ -1,7 +1,7 @@
 #ifndef ColliderComponent_hpp
 #define ColliderComponent_hpp
 
-#include "Components.hpp"
+#include "../Game.hpp"
 #include "SDL2/SDL_rect.h"
 #include "TransformComponent.hpp"
 
@@ -21,6 +21,8 @@ class ColliderComponent : public Component {
         }
 
         this->transform = &this->entity->getComponent<TransformComponent>();
+
+        Game::colliders.push_back(this);
     }
 
     void update() override {
