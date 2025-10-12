@@ -1,125 +1,24 @@
 #include "Map.hpp"
-#include "SDL2/SDL_render.h"
-#include "TextureManager.hpp"
+#include "Game.hpp"
+#include <cstdlib>
+#include <fstream>
 
-const int W = 0;
-const int G = 1;
-const int D = 2;
+// passing size x and size y is stupid, the file should contain the size of the map. so dumb
+// we could make the first two things be the size x and size y then the rest after a line break
+// could be the map
+void Map::load(std::string path, int sizeX, int sizeY) {
+    char tile;
+    std::fstream mapFile;
 
-int lvl1[20][25] = {
-    {
-        0, 0, 0, 0, G, G, G, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, G, G, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, G, G, G, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, D, D, D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    },
-};
+    mapFile.open(path);
 
-Map::Map() {
-    this->dirt = TextureManager::LoadTexture("assets/dirt.png");
-    this->grass = TextureManager::LoadTexture("assets/grass.png");
-    this->water = TextureManager::LoadTexture("assets/water.png");
-
-    this->load(lvl1);
-
-    this->src.x = this->src.y = 0;
-
-    this->src.w = 128;
-    this->src.h = 128;
-
-    this->dest.x = this->dest.y = 0;
-    this->dest.w = 32;
-    this->dest.h = 32;
-}
-
-Map::~Map() {
-    SDL_DestroyTexture(grass);
-    SDL_DestroyTexture(water);
-    SDL_DestroyTexture(dirt);
-}
-
-void Map::load(int arr[20][25]) {
-    for (int row = 0; row < 20; row++) {
-        for (int col = 0; col < 25; col++) {
-            this->map[row][col] = arr[row][col];
+    for (int y = 0; y < sizeY; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            mapFile.get(tile);
+            Game::addTile(atoi(&tile), x * 32, y * 32);
+            mapFile.ignore();
         }
     }
-}
 
-void Map::draw() {
-    int type = W;
-
-    for (int row = 0; row < 20; row++) {
-        for (int col = 0; col < 25; col++) {
-            type = this->map[row][col];
-            this->dest.x = col * 32;
-            this->dest.y = row * 32;
-
-            switch (type) {
-            case W:
-                TextureManager::draw(this->water, this->src, this->dest);
-                break;
-            case G:
-                TextureManager::draw(this->grass, this->src, this->dest);
-                break;
-            case D:
-                TextureManager::draw(this->dirt, this->src, this->dest);
-                break;
-            }
-        }
-    }
+    mapFile.close();
 }

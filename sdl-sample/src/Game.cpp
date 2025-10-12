@@ -14,8 +14,6 @@
 #include <iostream>
 #include <ostream>
 
-Map *map;
-
 SDL_Renderer *Game::renderer;
 SDL_Event *Game::event = new SDL_Event();
 
@@ -25,10 +23,6 @@ std::vector<ColliderComponent *> Game::colliders;
 
 Entity &player = manager.addEntity();
 Entity &wall = manager.addEntity();
-
-Entity &tile0 = manager.addEntity();
-Entity &tile1 = manager.addEntity();
-Entity &tile2 = manager.addEntity();
 
 Game::Game() {}
 Game::~Game() {}
@@ -75,20 +69,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     //     TextureManager::LoadTexture(this->renderer,
     //     "assets/Battleground1/Pale/stones&grass.png");
 
-    map = new Map();
+    Map::load("assets/p16x16.map", 16, 16);
 
     player.addComponent<TransformComponent>();
     player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
-
-    tile0.addComponent<TileComponent>(300, 300, 32, 32, 0);
-
-    tile1.addComponent<TileComponent>(350, 350, 32, 32, 1);
-    tile1.addComponent<ColliderComponent>("dirt");
-
-    tile2.addComponent<TileComponent>(250, 250, 32, 32, 2);
-    tile2.addComponent<ColliderComponent>("grass");
 
     wall.addComponent<TransformComponent>(300.0f, 300.0f, 20, 200, 1);
     wall.addComponent<SpriteComponent>("assets/dirt.png");
@@ -147,3 +133,9 @@ void Game::clean() {
 }
 
 bool Game::running() { return this->isRunning; }
+
+void Game::addTile(int id, int x, int y) {
+    Entity &tile = manager.addEntity();
+
+    tile.addComponent<TileComponent>(x, y, 32, 32, id);
+}

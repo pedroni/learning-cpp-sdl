@@ -1,5 +1,7 @@
 # SDL2 Learning
 
+https://www.youtube.com/watch?v=8Slu8vYPomg
+
 ## Project Setup
 
 This project contains a `CMakeLists.txt` file which is utilized by `cmake` command line.

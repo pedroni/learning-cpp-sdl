@@ -25,6 +25,8 @@ class Game {
     // Declare as static so we can use it globally as a singleton once it is initialized
     // In TextureManager, GameObject and any other place that we have to use we can simply do
     // Game::renderer instead of having to delcare multiple renderer pointers everywhere
+
+    static void addTile(int id, int x, int y);
     static SDL_Renderer *renderer;
     static SDL_Event *event;
 
