@@ -1,7 +1,6 @@
 #include "Game.hpp"
 #include "Collision.hpp"
 #include "ECS/ColliderComponent.hpp"
-#include "ECS/Components.hpp"
 #include "ECS/ECS.hpp"
 #include "ECS/KeyboardController.hpp"
 #include "ECS/SpriteComponent.hpp"
@@ -75,10 +74,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
+    player.addGroup(GroupLabels::GROUP_PLAYERS);
 
     wall.addComponent<TransformComponent>(300.0f, 300.0f, 20, 200, 1);
     wall.addComponent<SpriteComponent>("assets/dirt.png");
     wall.addComponent<ColliderComponent>("wall");
+    wall.addGroup(GroupLabels::GROUP_MAP);
 }
 
 void Game::handleEvents() {
@@ -117,10 +118,37 @@ void Game::update() {
 
 void Game::render() {
     SDL_RenderClear(this->renderer);
+
+    std::vector<Entity *> tiles = manager.getGroup(GroupLabels::GROUP_MAP);
+    std::vector<Entity *> players = manager.getGroup(GroupLabels::GROUP_PLAYERS);
+    std::vector<Entity *> enemies = manager.getGroup(GroupLabels::GROUP_ENEMIES);
+
     // this is where you render stuff, images, sprites
 
     // map->draw();
-    manager.draw();
+    // before we'd render everything out of the manager draw, now we use the groups to render in the
+    // order that we want instead of order of declaration
+    //
+    // 💡i think this is how we handle z index too. i guess we'd have to sort the vector based of z
+    // index and then place them at the correct order!!! thats awesome, i think im finally getting
+    // some ideas on how to implement things on my own.
+    //
+    // c++ is fast so they say, so that shouldnt be a problem to sort on an infinite while loop
+    //
+    //
+    // manager.draw();
+
+    for (int i = 0; i < tiles.size(); i++) {
+        tiles[i]->draw();
+    }
+
+    for (int i = 0; i < players.size(); i++) {
+        players[i]->draw();
+    }
+
+    for (int i = 0; i < enemies.size(); i++) {
+        enemies[i]->draw();
+    }
 
     SDL_RenderPresent(this->renderer);
 }
@@ -138,4 +166,5 @@ void Game::addTile(int id, int x, int y) {
     Entity &tile = manager.addEntity();
 
     tile.addComponent<TileComponent>(x, y, 32, 32, id);
+    tile.addGroup(GroupLabels::GROUP_MAP);
 }

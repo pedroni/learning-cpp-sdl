@@ -5,6 +5,7 @@
 #include "SDL2/SDL_rect.h"
 #include "SpriteComponent.hpp"
 #include "TransformComponent.hpp"
+#include <iostream>
 
 class TileComponent : public Component {
   public:
@@ -40,16 +41,11 @@ class TileComponent : public Component {
     }
 
     void init() override {
-        this->entity->addComponent<TransformComponent>(tileRect.x,
-                                                       tileRect.y,
-                                                       tileRect.w,
-                                                       tileRect.h,
-                                                       1);
+        this->entity
+            ->addComponent<TransformComponent>(tileRect.x, tileRect.y, tileRect.w, tileRect.h, 1);
 
         this->transform = &this->entity->getComponent<TransformComponent>();
 
-        // here is grass for while tile0 tile1 and tile2 in game why?
-        std::cout << this->path << std::endl;
         this->entity->addComponent<SpriteComponent>(this->path);
         this->sprite = &this->entity->getComponent<SpriteComponent>();
     }

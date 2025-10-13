@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include <array>
 #include <bitset>
 #include <cstddef>
@@ -12,10 +13,19 @@
 // Entity Component System
 class Component;
 class Entity;
+class Manager;
 
 using ComponentID = std::size_t;
+using Group = std::size_t;
 
-inline ComponentID getComponentTypeID() {
+enum GroupLabels : Group {
+    GROUP_MAP,
+    GROUP_PLAYERS,
+    GROUP_ENEMIES,
+    GROUPS_COLLIDERS,
+};
+
+inline ComponentID getNewComponentTypeID() {
     // marking this variable as static means that the value will be remembered between function
     // calls if we were to remove static the last id would be destroyed after every function call
     // and the memory would be clean up. using static with an inline function makes the variable
@@ -28,7 +38,7 @@ inline ComponentID getComponentTypeID() {
     // template it will always increment the ID. when using a template the ID will not be
     // incremented
 
-    static ComponentID lastID = 0;
+    static ComponentID lastID = 0u;
     return lastID++;
 }
 
@@ -39,14 +49,18 @@ inline ComponentID getComponentTypeID() {
     // getComponentTypeID<First>(); <- returns 0
     // getComponentTypeID<First>(); <- returns 0 // same value as before because of T
     // getComponentTypeID<Second>(); <- returns 1 a different T
-    static ComponentID typeID = getComponentTypeID();
+    static ComponentID typeID = getNewComponentTypeID();
     return typeID;
 }
 
 // max amount of things that our Entity Component System (ECS) can hold
 constexpr std::size_t maxComponents = 32;
 
-using ComponentBitSet = std::bitset<maxComponents>;
+constexpr std::size_t maxGroups = 32;
+
+using ComponentBitset = std::bitset<maxComponents>;
+using GroupBitset = std::bitset<maxGroups>;
+
 using ComponentArray = std::array<Component *, maxComponents>;
 
 // this works like interface beaucse there's no implementation at all and all function are virtual,
@@ -65,6 +79,8 @@ class Component {
 
 class Entity {
   private:
+    Manager &manager;
+
     // when false remove from the game
     bool active = true;
 
@@ -80,9 +96,12 @@ class Entity {
     // if(componentBitSet[0] == true) only requires checking 1 bit of memory (the size of a bit) in
     // our case we have a max component size set for 32, therefore the whole size of our set is
     // 32bits (4 bytes), if we were checking pointers it would be 256 bytes, 64x times bigger.
-    ComponentBitSet componentBitSet;
+    ComponentBitset componentBitset;
+
+    GroupBitset groupBitset;
 
   public:
+    Entity(Manager &m) : manager(m) {}
     void update() {
         for (std::size_t i = 0; i < this->components.size(); i++) {
             components[i]->update();
@@ -101,9 +120,15 @@ class Entity {
     // this function doesnt have the const keyword, therefore it can (and will) modify the state
     void destroy() { this->active = false; }
 
+    bool hasGroup(Group group) { return this->groupBitset[group]; }
+
+    void addGroup(Group group);
+
+    void delGroup(Group group) { this->groupBitset[group] = false; }
+
     template <typename T>
     bool hasComponent() const {
-        return componentBitSet[getComponentTypeID<T>()];
+        return componentBitset[getComponentTypeID<T>()];
     }
 
     template <typename T, typename... TArgs>
@@ -116,7 +141,7 @@ class Entity {
         components.emplace_back(std::move(uPtr));
 
         componentArray[getComponentTypeID<T>()] = newTypedComponent;
-        componentBitSet[getComponentTypeID<T>()] = true;
+        componentBitset[getComponentTypeID<T>()] = true;
 
         newTypedComponent->init();
 
@@ -133,6 +158,7 @@ class Entity {
 class Manager {
   private:
     std::vector<std::unique_ptr<Entity>> entities;
+    std::array<std::vector<Entity *>, maxGroups> groupedEntities;
 
   public:
     void update() {
@@ -148,6 +174,22 @@ class Manager {
     }
 
     void refresh() {
+        for (Group i = 0u; i < maxGroups; i++) {
+            std::vector<Entity *> vectorOfGroups = this->groupedEntities[i];
+            vectorOfGroups.erase(
+                std::remove_if(
+                    vectorOfGroups.begin(),
+                    vectorOfGroups.end(),
+                    // the [i] here works just like the use ($i) from php, to access the value
+                    // inside the callback function we have to provide the values that happen to be
+                    // outside of it
+                    [i](Entity *mEntity) {
+                        return !mEntity->isActive() || !mEntity->hasGroup(i);
+                    }),
+                // end remove if
+                vectorOfGroups.end());
+        }
+
         // erase takes two arguments: start and end
         // e.g. [0, 1, 2, 3, 4]
         // entities.erase(0, 2) // [3,4]
@@ -159,16 +201,24 @@ class Manager {
         // combination with .erase, it is the first arg of erase and the second arg is the the end
         // of the vector
 
-        entities.erase(std::remove_if(entities.begin(),
-                                      entities.end(),
-                                      [](const std::unique_ptr<Entity> &mEntity) {
-                                          return !mEntity->isActive();
-                                      }),
-                       entities.end());
+        entities.erase(
+            std::remove_if(
+                this->entities.begin(),
+                this->entities.end(),
+                [](const std::unique_ptr<Entity> &mEntity) {
+                    return !mEntity->isActive();
+                }),
+            this->entities.end());
     }
 
+    void addToGroup(Entity *entity, Group group) {
+        this->groupedEntities[group].emplace_back(entity);
+    }
+
+    std::vector<Entity *> &getGroup(Group group) { return this->groupedEntities[group]; }
+
     Entity &addEntity() {
-        Entity *entity = new Entity();
+        Entity *entity = new Entity(*this);
         std::unique_ptr<Entity> uPtr{entity};
         entities.emplace_back(std::move(uPtr));
         return *entity;

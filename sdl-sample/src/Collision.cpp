@@ -2,6 +2,7 @@
 #include "Collision.hpp"
 #include "ECS/ColliderComponent.hpp"
 #include "SDL2/SDL_rect.h"
+#include <iostream>
 
 bool Collision::AABB(const SDL_Rect &A, const SDL_Rect &B) {
     bool xOverlap = A.x + A.w >= B.x && B.x + B.w >= A.x;

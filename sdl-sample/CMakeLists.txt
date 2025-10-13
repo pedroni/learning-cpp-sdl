@@ -12,7 +12,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL2_IMAGE REQUIRED SDL2_image)
 
 # Get all cpp files
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "src/ECS/*.cpp")
 
 # Create executable
 add_executable(myprogram ${SOURCES})
