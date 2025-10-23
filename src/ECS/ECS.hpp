@@ -175,7 +175,7 @@ class Manager {
 
     void refresh() {
         for (Group i = 0u; i < maxGroups; i++) {
-            std::vector<Entity *> vectorOfGroups = this->groupedEntities[i];
+            std::vector<Entity *> &vectorOfGroups = this->groupedEntities[i];
             vectorOfGroups.erase(
                 std::remove_if(
                     vectorOfGroups.begin(),

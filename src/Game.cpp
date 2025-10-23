@@ -119,9 +119,9 @@ void Game::update() {
 void Game::render() {
     SDL_RenderClear(this->renderer);
 
-    std::vector<Entity *> tiles = manager.getGroup(GroupLabels::GROUP_MAP);
-    std::vector<Entity *> players = manager.getGroup(GroupLabels::GROUP_PLAYERS);
-    std::vector<Entity *> enemies = manager.getGroup(GroupLabels::GROUP_ENEMIES);
+    std::vector<Entity *> &tiles = manager.getGroup(GroupLabels::GROUP_MAP);
+    std::vector<Entity *> &players = manager.getGroup(GroupLabels::GROUP_PLAYERS);
+    std::vector<Entity *> &enemies = manager.getGroup(GroupLabels::GROUP_ENEMIES);
 
     // this is where you render stuff, images, sprites
 
