@@ -4,6 +4,7 @@
 #include "../TextureManager.hpp"
 #include "ECS.hpp"
 #include "SDL2/SDL_render.h"
+#include "SDL2/SDL_timer.h"
 #include "TransformComponent.hpp"
 
 class SpriteComponent : public Component {
@@ -11,21 +12,28 @@ class SpriteComponent : public Component {
     TransformComponent *transform;
     SDL_Texture *texture;
     SDL_Rect srcRect, destRect;
-    int step = 0;
+
+    bool animated = false;
+    int frames = 0;
+    int speed = 100; // in ms
 
   public:
     SpriteComponent(const char *path) { this->setTexture(path); }
+    SpriteComponent(const char *path, int nFrames, int mSpeed) {
+        this->animated = true;
+        this->frames = nFrames;
+        this->speed = mSpeed;
+        this->setTexture(path);
+    }
 
     ~SpriteComponent() { SDL_DestroyTexture(this->texture); }
 
     // used to swap texture
     void setTexture(const char *path) { this->texture = TextureManager::LoadTexture(path); }
-    void setStep(int step) { this->step = step; }
 
     void init() override {
         this->transform = &entity->getComponent<TransformComponent>();
 
-        this->srcRect.x = this->step * 128;
         this->srcRect.y = 0;
 
         this->srcRect.w = this->transform->width;
@@ -45,9 +53,12 @@ class SpriteComponent : public Component {
         // in the videos from Lets Make Games he casts it using static_cast<int>, he says its easier
         // for debug but i have no idea;
 
+        if (animated) {
+            srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / this->speed) % this->frames);
+        }
+
         destRect.x = transform->position.x;
         destRect.y = transform->position.y;
-        this->srcRect.x = this->step * 128;
     }
 
     void draw() override { TextureManager::draw(this->texture, this->srcRect, this->destRect); }

@@ -71,7 +71,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     Map::load("assets/p16x16.map", 16, 16);
 
     player.addComponent<TransformComponent>();
-    player.addComponent<SpriteComponent>("assets/Knight_1/Walk.png");
+    player.addComponent<SpriteComponent>("assets/Knight_1/Idle.png", 4, 175);
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(GroupLabels::GROUP_PLAYERS);
@@ -103,12 +103,6 @@ void Game::update() {
             // player.getComponent<TransformComponent>().velocity * -1;
         }
         // std::cout << "hit something" << std::endl;
-    }
-
-    if (player.getComponent<TransformComponent>().position.x > 100) {
-        player.getComponent<SpriteComponent>().setStep(2);
-    } else {
-        player.getComponent<SpriteComponent>().setStep(1);
     }
 
     if (player.getComponent<TransformComponent>().position.x > 1000) {
