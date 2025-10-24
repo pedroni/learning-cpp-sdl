@@ -32,12 +32,11 @@ class KeyboardController : public Component {
         }
 
         if (keyboardState[SDL_SCANCODE_A]) {
-            this->transform->velocity.x = -1;
+            this->transform->velocity.x = keyboardState[SDL_SCANCODE_LSHIFT] == 0 ? -1 : -2.2;
         }
 
         if (keyboardState[SDL_SCANCODE_D]) {
-
-            this->transform->velocity.x = 1;
+            this->transform->velocity.x = keyboardState[SDL_SCANCODE_LSHIFT] == 0 ? 1 : 2.2;
         }
 
         if (keyboardState[SDL_SCANCODE_W] == 0 && keyboardState[SDL_SCANCODE_S] == 0) {

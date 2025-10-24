@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "Collision.hpp"
+#include "ECS/Animation.hpp"
 #include "ECS/ColliderComponent.hpp"
 #include "ECS/ECS.hpp"
 #include "ECS/KeyboardController.hpp"
@@ -10,8 +11,10 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
 #include "Vector2D.hpp"
+#include <array>
 #include <iostream>
 #include <ostream>
+#include <vector>
 
 SDL_Renderer *Game::renderer;
 SDL_Event *Game::event = new SDL_Event();
@@ -70,8 +73,14 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     Map::load("assets/p16x16.map", 16, 16);
 
-    player.addComponent<TransformComponent>();
-    player.addComponent<SpriteComponent>("assets/Knight_1/Idle.png", 4, 175);
+    player.addComponent<TransformComponent>(64, 128);
+
+    std::vector<Animation> playerAnimations;
+    playerAnimations.push_back(Animation("assets/Knight_1/Idle.png", 4, 175, 128));
+    playerAnimations.push_back(Animation("assets/Knight_1/Walk.png", 8, 200, 128));
+    playerAnimations.push_back(Animation("assets/Knight_1/Run.png", 7, 175, 128));
+    player.addComponent<SpriteComponent>(playerAnimations);
+
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(GroupLabels::GROUP_PLAYERS);

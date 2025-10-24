@@ -23,6 +23,12 @@ class TransformComponent : public Component {
         this->position.y = y;
     }
 
+    TransformComponent(int w, int h, int scale = 1) {
+        this->width = w;
+        this->height = h;
+        this->scale = scale;
+    }
+
     TransformComponent(float x, float y, int w, int h, int scale) {
         this->position.x = x;
         this->position.y = y;

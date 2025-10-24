@@ -14,16 +14,16 @@ class SpriteComponent : public Component {
     SDL_Rect srcRect, destRect;
 
     bool animated = false;
-    int frames = 0;
-    int speed = 100; // in ms
+    SDL_RendererFlip flipTexture = SDL_FLIP_NONE;
+
+    int currentAnimation = 0; // 0 for idle, 1 for walking, 2 for sprinting
+    std::vector<Animation> animations;
 
   public:
     SpriteComponent(const char *path) { this->setTexture(path); }
-    SpriteComponent(const char *path, int nFrames, int mSpeed) {
+    SpriteComponent(std::vector<Animation> animations) {
         this->animated = true;
-        this->frames = nFrames;
-        this->speed = mSpeed;
-        this->setTexture(path);
+        this->animations = animations;
     }
 
     ~SpriteComponent() { SDL_DestroyTexture(this->texture); }
@@ -46,6 +46,34 @@ class SpriteComponent : public Component {
     }
 
     void update() override {
+
+        if (animated) {
+            // if walking in x path, meaning we have velocity on x (KeyboardController, updates the
+            // x velocity when going forward or backwards, 0 velocity means its idle,
+            // this->currentAnimation = this->transform->velocity.x != 0 ? 1 : 0;
+            if (this->transform->velocity.x > 1.1 || this->transform->velocity.x < -1.1) {
+                this->currentAnimation = 2;
+                std::cout << "Sprinting!" << std::endl;
+            } else if (this->transform->velocity.x > 0 || this->transform->velocity.x < 0) {
+                this->currentAnimation = 1;
+            } else {
+                this->currentAnimation = 0;
+            }
+
+            // if negative means going backwards, positive forward
+            if (this->transform->velocity.x < 0) {
+                this->flipTexture = SDL_FLIP_HORIZONTAL;
+            } else if (this->transform->velocity.x > 0) {
+                this->flipTexture = SDL_FLIP_NONE;
+            }
+
+            Animation &animation = this->animations.at(currentAnimation);
+            this->setTexture(animation.path);
+
+            srcRect.x = animation.frameWidth *
+                        static_cast<int>((SDL_GetTicks() / animation.speed) % animation.frames);
+        }
+
         // the rect x and y are int. and the transform are floats. these are casted automatically i
         // dont  know whether i should cast them or not, they just work like t his without issues
         // though. so i dont think i have to care about it though
@@ -53,14 +81,12 @@ class SpriteComponent : public Component {
         // in the videos from Lets Make Games he casts it using static_cast<int>, he says its easier
         // for debug but i have no idea;
 
-        if (animated) {
-            srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / this->speed) % this->frames);
-        }
-
         destRect.x = transform->position.x;
         destRect.y = transform->position.y;
     }
 
-    void draw() override { TextureManager::draw(this->texture, this->srcRect, this->destRect); }
+    void draw() override {
+        TextureManager::draw(this->texture, this->srcRect, this->destRect, this->flipTexture);
+    }
 };
 #endif
