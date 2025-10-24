@@ -2,10 +2,13 @@
 #define SpriteComponent_hpp
 
 #include "../TextureManager.hpp"
+#include "Animation.hpp"
 #include "ECS.hpp"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_timer.h"
 #include "TransformComponent.hpp"
+#include <iostream>
+#include <vector>
 
 class SpriteComponent : public Component {
   private:
