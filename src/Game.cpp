@@ -11,7 +11,6 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
 #include "Vector2D.hpp"
-#include <array>
 #include <iostream>
 #include <ostream>
 #include <vector>
@@ -24,7 +23,9 @@ Manager manager;
 std::vector<ColliderComponent *> Game::colliders;
 
 Entity &player = manager.addEntity();
-Entity &wall = manager.addEntity();
+// Entity &wall = manager.addEntity();
+
+const char *mapFile = "assets/MapAssets/terrain_ss.png";
 
 Game::Game() {}
 Game::~Game() {}
@@ -71,7 +72,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     //     TextureManager::LoadTexture(this->renderer,
     //     "assets/Battleground1/Pale/stones&grass.png");
 
-    Map::load("assets/p16x16.map", 16, 16);
+    Map::load("assets/MapAssets/map.map", 25, 20);
 
     player.addComponent<TransformComponent>(64, 128);
 
@@ -85,10 +86,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<ColliderComponent>("player");
     player.addGroup(GroupLabels::GROUP_PLAYERS);
 
-    wall.addComponent<TransformComponent>(300.0f, 300.0f, 20, 200, 1);
-    wall.addComponent<SpriteComponent>("assets/dirt.png");
-    wall.addComponent<ColliderComponent>("wall");
-    wall.addGroup(GroupLabels::GROUP_MAP);
+    // wall.addComponent<TransformComponent>(300.0f, 300.0f, 20, 200, 1);
+    // wall.addComponent<SpriteComponent>("assets/dirt.png");
+    // wall.addComponent<ColliderComponent>("wall");
+    // wall.addGroup(GroupLabels::GROUP_MAP);
 }
 
 void Game::handleEvents() {
@@ -165,9 +166,9 @@ void Game::clean() {
 
 bool Game::running() { return this->isRunning; }
 
-void Game::addTile(int id, int x, int y) {
+void Game::addTile(int srcX, int srcY, int posX, int posY) {
     Entity &tile = manager.addEntity();
 
-    tile.addComponent<TileComponent>(x, y, 32, 32, id);
+    tile.addComponent<TileComponent>(srcX, srcY, posX, posY, mapFile);
     tile.addGroup(GroupLabels::GROUP_MAP);
 }

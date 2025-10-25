@@ -3,62 +3,39 @@
 
 #include "Components.hpp"
 #include "SDL2/SDL_rect.h"
-#include "SpriteComponent.hpp"
-#include "TransformComponent.hpp"
-#include <iostream>
+#include "SDL2/SDL_render.h"
 
 class TileComponent : public Component {
   public:
-    SDL_Rect tileRect;
-    int tileID;
-    const char *path;
-
-    TransformComponent *transform;
-    SpriteComponent *sprite;
+    SDL_Texture *texture;
+    SDL_Rect srcRect, destRect;
 
     TileComponent() {}
-    TileComponent(int x, int y, int w, int h, int id) {
-        this->tileRect.x = x;
-        this->tileRect.y = y;
-        this->tileRect.w = w;
-        this->tileRect.h = h;
-        this->tileID = id;
+    TileComponent(int srcX, int srcY, int posX, int posY, const char *path) {
+        this->texture = TextureManager::LoadTexture(path);
 
-        switch (this->tileID) {
-        case 0:
-            this->path = "assets/water.png";
-            break;
-        case 1:
-            this->path = "assets/dirt.png";
-            break;
-        case 2:
-            this->path = "assets/grass.png";
-            break;
-        default:
-            this->path = "assets/water.png";
-            break;
-        }
+        // src rect means the rectangle that we want to get from our source file.
+        // the x and y here, referr to the position that they're in the png (sprite) file
+        this->srcRect.x = srcX;
+        this->srcRect.y = srcY;
+
+        // in here we have 32 because we want to get a square of 32px in our png sprite.
+        this->srcRect.w = this->srcRect.h = 32;
+
+        // dest rect means the window screen, that's why we have posX and posY, its the position on
+        // the screen that we want to draw the thing
+        this->destRect.x = posX;
+        this->destRect.y = posY;
+
+        // here we have 64 pixel because we're scaling the src rect to double its size, so that its
+        // rendered twice as big in the screen
+        this->destRect.w = this->destRect.h = 64;
     }
 
-    void init() override {
-        this->entity
-            ->addComponent<TransformComponent>(tileRect.x, tileRect.y, tileRect.w, tileRect.h, 1);
+    ~TileComponent() { SDL_DestroyTexture(this->texture); }
+    void init() override {}
 
-        this->transform = &this->entity->getComponent<TransformComponent>();
-
-        this->entity->addComponent<SpriteComponent>(this->path);
-        this->sprite = &this->entity->getComponent<SpriteComponent>();
-    }
-
-    void update() override {
-        // this should probaly be casted, because collider is int and then in the position of the
-        // transform its float
-        this->tileRect.x = transform->position.x;
-        this->tileRect.y = transform->position.y;
-
-        this->tileRect.w = transform->width * this->transform->scale;
-        this->tileRect.h = transform->height * this->transform->scale;
-    }
+    void draw() override { TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE); }
 };
 
 #endif
