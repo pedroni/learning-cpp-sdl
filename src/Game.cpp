@@ -77,9 +77,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<TransformComponent>(64, 128);
 
     std::vector<Animation> playerAnimations;
-    playerAnimations.push_back(Animation("assets/Knight_1/Idle.png", 4, 175, 128));
-    playerAnimations.push_back(Animation("assets/Knight_1/Walk.png", 8, 200, 128));
-    playerAnimations.push_back(Animation("assets/Knight_1/Run.png", 7, 175, 128));
+    playerAnimations.push_back(Animation("assets/Knight_1/Idle.png", 4, 128, 175));
+    playerAnimations.push_back(Animation("assets/Knight_1/Walk.png", 8, 128, 200));
+    playerAnimations.push_back(Animation("assets/Knight_1/Run.png", 7, 128, 175));
     player.addComponent<SpriteComponent>(playerAnimations);
 
     player.addComponent<KeyboardController>();

@@ -4,16 +4,16 @@
 struct Animation {
     const char *path;
     int frames;
-    int speed;
     int frameWidth;
+    int speed;
 
     Animation() {}
 
-    Animation(const char *path, int frames, int speed, int frameWidth) {
+    Animation(const char *path, int frames, int frameWidth, int speed) {
         this->path = path;
         this->frames = frames;
-        this->speed = speed;
         this->frameWidth = frameWidth;
+        this->speed = speed;
     }
 };
 
