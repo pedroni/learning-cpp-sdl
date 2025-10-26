@@ -1,6 +1,7 @@
 #ifndef SpriteComponent_hpp
 #define SpriteComponent_hpp
 
+#include "../Game.hpp"
 #include "../TextureManager.hpp"
 #include "Animation.hpp"
 #include "ECS.hpp"
@@ -83,8 +84,8 @@ class SpriteComponent : public Component {
         // in the videos from Lets Make Games he casts it using static_cast<int>, he says its easier
         // for debug but i have no idea;
 
-        destRect.x = transform->position.x;
-        destRect.y = transform->position.y;
+        destRect.x = transform->position.x - Game::camera.x;
+        destRect.y = transform->position.y - Game::camera.y;
     }
 
     void draw() override {

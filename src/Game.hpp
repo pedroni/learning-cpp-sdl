@@ -3,6 +3,7 @@
 #define Game_hpp
 
 #include "SDL2/SDL_events.h"
+#include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
 #include <vector>
 
@@ -33,6 +34,7 @@ class Game {
     static std::vector<ColliderComponent *> colliders;
 
     static bool isRunning;
+    static SDL_Rect camera;
 
   private:
     int cnt;

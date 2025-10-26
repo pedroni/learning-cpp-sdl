@@ -44,11 +44,8 @@ class TransformComponent : public Component {
     // can actually be overrided, if the base class doesn't have `virtual` in the `update` method,
     // then this would fail and we would be aware that we were doing something uninteded
     void update() override {
-        // the code below is to make the player move, but we're now moving the map, and the player
-        // is at the middle fo the game:
-        //
-        // position.x += velocity.x * speed;
-        // position.y += velocity.y * speed;
+        position.x += velocity.x * speed;
+        position.y += velocity.y * speed;
     }
 };
 #endif

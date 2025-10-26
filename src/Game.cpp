@@ -9,6 +9,7 @@
 #include "ECS/TransformComponent.hpp"
 #include "Map.hpp"
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
 #include "Vector2D.hpp"
 #include <iostream>
@@ -18,6 +19,7 @@
 SDL_Renderer *Game::renderer;
 SDL_Event *Game::event = new SDL_Event();
 bool Game::isRunning = true;
+SDL_Rect Game::camera = {0, 0, 800, 640};
 
 Manager manager;
 
@@ -114,14 +116,26 @@ void Game::update() {
     manager.refresh();
     manager.update();
 
-    TransformComponent &playerTransform = player.getComponent<TransformComponent>();
+    camera.x = player.getComponent<TransformComponent>().position.x - 340;
+    camera.y = player.getComponent<TransformComponent>().position.y - 230;
 
-    Vector2D playerVelocity = playerTransform.velocity;
-    int playerSpeed = playerTransform.speed;
+    // bound camera to the window size
+    if (camera.x < 0) {
+        camera.x = 0;
+    }
 
-    for (int i = 0; i < tiles.size(); i++) {
-        tiles[i]->getComponent<TileComponent>().destRect.x += -(playerVelocity.x * playerSpeed);
-        tiles[i]->getComponent<TileComponent>().destRect.y += -(playerVelocity.y * playerSpeed);
+    if (camera.y < 0) {
+        camera.y = 0;
+    }
+
+    // don't allow to grow bigger than the width of the camera
+    if (camera.x > camera.w) {
+        camera.x = camera.w;
+    }
+
+    // same, but for height
+    if (camera.y > camera.h) {
+        camera.y = camera.h;
     }
 
     for (int i = 0; i < this->colliders.size(); i++) {
