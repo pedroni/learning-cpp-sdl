@@ -12,8 +12,7 @@ class Map {
         int sizeY,
         int tileSize,
         int mapScale);
-    void load();
-    void addTile(int srcX, int srcY, int posX, int posY);
+    void render();
 
   private:
     SDL_Texture *texture;
@@ -23,6 +22,8 @@ class Map {
     int tileSize;
     int mapScale;
     int scaledSize;
+
+    void addTile(int srcX, int srcY, int posX, int posY);
 };
 
 #endif

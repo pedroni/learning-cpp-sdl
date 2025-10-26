@@ -17,7 +17,7 @@ Map::Map(
     int sizeY,
     int tileSize,
     int mapScale) {
-    this->texture = TextureManager::LoadTexture(texturePath);
+    this->texture = TextureManager::load(texturePath);
     this->coordinatesPath = coordinatesPath;
     this->sizeX = sizeX;
     this->sizeY = sizeY;
@@ -29,7 +29,7 @@ Map::Map(
 // passing size x and size y is stupid, the file should contain the size of the map. so dumb
 // we could make the first two things be the size x and size y then the rest after a line break
 // could be the map
-void Map::load() {
+void Map::render() {
     char tile;
     std::fstream mapFile;
 

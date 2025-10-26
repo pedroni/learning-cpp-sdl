@@ -6,7 +6,7 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_surface.h"
 
-SDL_Texture *TextureManager::LoadTexture(const char *fileName) {
+SDL_Texture *TextureManager::load(const char *fileName) {
     SDL_Surface *tempSurface = IMG_Load(fileName);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(Game::renderer, tempSurface);
 

@@ -36,7 +36,7 @@ class SpriteComponent : public Component {
         this->transform = &entity->getComponent<TransformComponent>();
 
         for (int i = 0; i < animations.size(); i++) {
-            this->textures.push_back(TextureManager::LoadTexture(animations[i].path));
+            this->textures.push_back(TextureManager::load(animations[i].path));
         }
 
         this->srcRect.y = 0;

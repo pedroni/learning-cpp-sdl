@@ -34,7 +34,7 @@ class ColliderComponent : public Component {
         }
 
         this->transform = &this->entity->getComponent<TransformComponent>();
-        this->texture = TextureManager::LoadTexture("assets/collision.png");
+        this->texture = TextureManager::load("assets/collision.png");
         this->srcRect = {0, 0, 32, 32};
         this->destRect = {collider.x, collider.y, collider.w, collider.h};
     }

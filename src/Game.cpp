@@ -57,7 +57,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     }
 
     Map map("assets/MapAssets/terrain_ss.png", "assets/MapAssets/map.map", 25, 20, 32, 2);
-    map.load();
+    map.render();
 
     // spawns the player at 540x430 coordinates
     player.addComponent<TransformComponent>(540, 430, 64, 128);
