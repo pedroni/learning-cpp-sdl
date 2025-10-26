@@ -78,9 +78,12 @@ class SpriteComponent : public Component {
                     static_cast<int>((SDL_GetTicks() / animation.speed) % animation.frames);
 
         // the position.x and position.y from transform is moved on the KeyboardController, they're
-        // modified whenever WASD are pressed. The camera x and y are used as offsets so that we can
-        // always make the player be at the center of the screen. note that destRect is where in the
-        // window (renderer) we will be placing our player image (sprite)
+        // modified whenever WASD are pressed. The position is where the player is actually in the
+        // world.
+        //
+        // The camera x and y are used as offsets so that we can always make the player be at the
+        // center of the screen. note that destRect is where in the window (renderer) we will be
+        // placing our player image (sprite)
         destRect.x = transform->position.x - Game::camera.x;
         destRect.y = transform->position.y - Game::camera.y;
     }

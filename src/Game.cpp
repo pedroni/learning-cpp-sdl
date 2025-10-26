@@ -140,11 +140,11 @@ void Game::update() {
         camera.y = camera.h;
     }
 
-    if ((SDL_GetTicks() % 50 == 0)) {
-        std::cout << "Camera: x=" << camera.x << ", y=" << camera.y
-                  << ", Player: x=" << player.getComponent<TransformComponent>().position.x
-                  << ", y=" << player.getComponent<TransformComponent>().position.y << std::endl;
-    }
+    // if ((SDL_GetTicks() % 50 == 0)) {
+    //     std::cout << "Camera: x=" << camera.x << ", y=" << camera.y
+    //               << ", Player: x=" << player.getComponent<TransformComponent>().position.x
+    //               << ", y=" << player.getComponent<TransformComponent>().position.y << std::endl;
+    // }
 
     for (int i = 0; i < this->colliders.size(); i++) {
         if (Collision::AABB(player.getComponent<ColliderComponent>(), *this->colliders[i])) {

@@ -17,17 +17,23 @@ class TileComponent : public Component {
     // destRect is where the tile is drawn on the renderer
     SDL_Rect destRect;
 
-    // position here is used to know where they're actually are ON the tile map, and not where
+    // position here is used to know where they're actually are ON in the WORLD, and not where
     // they're being drawn. we have the destRect which is the rectangle that represents where in the
     // rendered it's being drawn
-    Vector2D tileMapPosition;
+    Vector2D worldPosition;
 
-    TileComponent() {}
-    TileComponent(int srcX, int srcY, int posX, int posY, const char *path) {
+    TileComponent(
+        int srcX,
+        int srcY,
+        int posX,
+        int posY,
+        int tileSize,
+        int tileScale,
+        const char *path) {
         this->texture = TextureManager::LoadTexture(path);
 
-        this->tileMapPosition.x = posX;
-        this->tileMapPosition.y = posY;
+        this->worldPosition.x = posX;
+        this->worldPosition.y = posY;
 
         // src rect means the rectangle that we want to get from our source file.
         // the x and y here, referr to the position that they're in the png (sprite) file
@@ -35,7 +41,7 @@ class TileComponent : public Component {
         this->srcRect.y = srcY;
 
         // in here we have 32 because we want to get a square of 32px in our png sprite.
-        this->srcRect.w = this->srcRect.h = 32;
+        this->srcRect.w = this->srcRect.h = tileSize;
 
         // dest rect means the window screen, that's why we have posX and posY, its the position on
         // the screen that we want to draw the thing
@@ -44,17 +50,20 @@ class TileComponent : public Component {
 
         // here we have 64 pixel because we're scaling the src rect to double its size, so that its
         // rendered twice as big in the screen
-        this->destRect.w = this->destRect.h = 64;
+        this->destRect.w = this->destRect.h = tileSize * tileScale;
     }
 
     ~TileComponent() { SDL_DestroyTexture(this->texture); }
+
     void init() override {}
 
     void update() override {
         // tile position is fixed! it never changes, however we change it on the screen by
         // calculating from the camera. the camera x and y changes as the player moves.
-        destRect.x = tileMapPosition.x - Game::camera.x;
-        destRect.y = tileMapPosition.y - Game::camera.y;
+        // the position is like where it's in the world, the destRect is where it should be on the
+        // screen
+        destRect.x = worldPosition.x - Game::camera.x;
+        destRect.y = worldPosition.y - Game::camera.y;
     }
 
     void draw() override { TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE); }
