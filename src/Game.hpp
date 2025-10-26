@@ -5,7 +5,6 @@
 #include "SDL2/SDL_events.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
-#include <vector>
 
 class ColliderComponent;
 
@@ -26,12 +25,8 @@ class Game {
     // Declare as static so we can use it globally as a singleton once it is initialized
     // In TextureManager, GameObject and any other place that we have to use we can simply do
     // Game::renderer instead of having to delcare multiple renderer pointers everywhere
-
-    static void addTile(int srcX, int srcY, int posX, int posY);
     static SDL_Renderer *renderer;
     static SDL_Event *event;
-
-    static std::vector<ColliderComponent *> colliders;
 
     static bool isRunning;
     static SDL_Rect camera;

@@ -8,7 +8,6 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_timer.h"
 #include "TransformComponent.hpp"
-#include <iostream>
 #include <vector>
 
 class SpriteComponent : public Component {

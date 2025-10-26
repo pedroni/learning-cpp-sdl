@@ -5,13 +5,11 @@
 #include "ECS/ECS.hpp"
 #include "ECS/KeyboardController.hpp"
 #include "ECS/SpriteComponent.hpp"
-#include "ECS/TileComponent.hpp"
 #include "ECS/TransformComponent.hpp"
 #include "Map.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
-#include "SDL2/SDL_timer.h"
 #include "Vector2D.hpp"
 #include <iostream>
 #include <ostream>
@@ -24,12 +22,8 @@ SDL_Rect Game::camera = {0, 0, 800, 640};
 
 Manager manager;
 
-std::vector<ColliderComponent *> Game::colliders;
-
 Entity &player = manager.addEntity();
 // Entity &wall = manager.addEntity();
-
-const char *mapFile = "assets/MapAssets/terrain_ss.png";
 
 Game::Game() {}
 Game::~Game() {}
@@ -37,6 +31,7 @@ Game::~Game() {}
 std::vector<Entity *> &tiles = manager.getGroup(GroupLabels::GROUP_MAP);
 std::vector<Entity *> &players = manager.getGroup(GroupLabels::GROUP_PLAYERS);
 std::vector<Entity *> &enemies = manager.getGroup(GroupLabels::GROUP_ENEMIES);
+std::vector<Entity *> &colliders = manager.getGroup(GroupLabels::GROUPS_COLLIDERS);
 
 void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullScreen) {
     int flags = 0;
@@ -61,28 +56,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         }
     }
 
-    // bg1Texture = TextureManager::LoadTexture(this->renderer,
-    // "assets/Battleground1/Pale/sky.png"); bg1DestR.x = -800;
+    Map map("assets/MapAssets/terrain_ss.png", "assets/MapAssets/map.map", 25, 20, 32, 2);
+    map.load();
 
-    // bg2Texture =
-    //     TextureManager::LoadTexture(this->renderer, "assets/Battleground1/Pale/ruins_bg.png");
-
-    // bg3Texture =
-    //     TextureManager::LoadTexture(this->renderer, "assets/Battleground1/Pale/hills&trees.png");
-
-    // bg4Texture = TextureManager::LoadTexture(this->renderer,
-    // "assets/Battleground1/Pale/ruins.png");
-
-    // bg5Texture =
-    //     TextureManager::LoadTexture(this->renderer, "assets/Battleground1/Pale/ruins2.png");
-
-    // bg6Texture =
-    //     TextureManager::LoadTexture(this->renderer,
-    //     "assets/Battleground1/Pale/stones&grass.png");
-
-    Map::load("assets/MapAssets/map.map", 25, 20);
-
-    player.addComponent<TransformComponent>(64, 128);
+    // spawns the player at 540x430 coordinates
+    player.addComponent<TransformComponent>(540, 430, 64, 128);
 
     std::vector<Animation> playerAnimations;
     playerAnimations.push_back(Animation("assets/Knight_1/Idle.png", 4, 128, 175));
@@ -114,8 +92,18 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
+    SDL_Rect &playerCollider = player.getComponent<ColliderComponent>().collider;
+    Vector2D previousPlayerPosition = player.getComponent<TransformComponent>().position;
+
     manager.refresh();
     manager.update();
+
+    for (int i = 0; i < colliders.size(); i++) {
+        SDL_Rect colliderRect = colliders[i]->getComponent<ColliderComponent>().collider;
+        if (Collision::AABB(playerCollider, colliderRect)) {
+            player.getComponent<TransformComponent>().position = previousPlayerPosition;
+        }
+    }
 
     // makes the camera follow the player, making it always at the center
     camera.x = player.getComponent<TransformComponent>().position.x - 340;
@@ -145,13 +133,6 @@ void Game::update() {
     //               << ", Player: x=" << player.getComponent<TransformComponent>().position.x
     //               << ", y=" << player.getComponent<TransformComponent>().position.y << std::endl;
     // }
-
-    for (int i = 0; i < this->colliders.size(); i++) {
-        if (Collision::AABB(player.getComponent<ColliderComponent>(), *this->colliders[i])) {
-            // player.getComponent<TransformComponent>().velocity * -1;
-        }
-        // std::cout << "hit something" << std::endl;
-    }
 }
 
 void Game::render() {
@@ -184,6 +165,10 @@ void Game::render() {
         enemies[i]->draw();
     }
 
+    for (int i = 0; i < colliders.size(); i++) {
+        colliders[i]->draw();
+    }
+
     SDL_RenderPresent(this->renderer);
 }
 
@@ -195,10 +180,3 @@ void Game::clean() {
 }
 
 bool Game::running() { return this->isRunning; }
-
-void Game::addTile(int srcX, int srcY, int posX, int posY) {
-    Entity &tile = manager.addEntity();
-
-    tile.addComponent<TileComponent>(srcX, srcY, posX, posY, mapFile);
-    tile.addGroup(GroupLabels::GROUP_MAP);
-}

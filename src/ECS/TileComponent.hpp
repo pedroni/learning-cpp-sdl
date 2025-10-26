@@ -23,14 +23,14 @@ class TileComponent : public Component {
     Vector2D worldPosition;
 
     TileComponent(
+        SDL_Texture *texture,
         int srcX,
         int srcY,
         int posX,
         int posY,
         int tileSize,
-        int tileScale,
-        const char *path) {
-        this->texture = TextureManager::LoadTexture(path);
+        int tileScale) {
+        this->texture = texture;
 
         this->worldPosition.x = posX;
         this->worldPosition.y = posY;
@@ -52,8 +52,6 @@ class TileComponent : public Component {
         // rendered twice as big in the screen
         this->destRect.w = this->destRect.h = tileSize * tileScale;
     }
-
-    ~TileComponent() { SDL_DestroyTexture(this->texture); }
 
     void init() override {}
 
