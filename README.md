@@ -4,7 +4,7 @@ https://www.youtube.com/watch?v=8Slu8vYPomg
 
 ## Demo
 
-![Demo](readme/demo.gif)
+![Demo](./readme/demo.gif)
 
 ## Project Setup
 
