@@ -32,7 +32,11 @@ class SpriteComponent : public Component {
     ~SpriteComponent() { SDL_DestroyTexture(this->texture); }
 
     // used to swap texture
-    void setTexture(const char *path) { this->texture = TextureManager::LoadTexture(path); }
+    void setTexture(const char *path) {
+        SDL_DestroyTexture(this->texture);
+
+        this->texture = TextureManager::LoadTexture(path);
+    }
 
     void init() override {
         this->transform = &entity->getComponent<TransformComponent>();
@@ -70,11 +74,11 @@ class SpriteComponent : public Component {
                 this->flipTexture = SDL_FLIP_NONE;
             }
 
-            Animation &animation = this->animations.at(currentAnimation);
-            this->setTexture(animation.path);
+            Animation *animation = &this->animations.at(currentAnimation);
+            this->setTexture(animation->path);
 
-            srcRect.x = animation.frameWidth *
-                        static_cast<int>((SDL_GetTicks() / animation.speed) % animation.frames);
+            srcRect.x = animation->frameWidth *
+                        static_cast<int>((SDL_GetTicks() / animation->speed) % animation->frames);
         }
 
         // the rect x and y are int. and the transform are floats. these are casted automatically i
