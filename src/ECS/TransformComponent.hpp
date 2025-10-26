@@ -19,8 +19,10 @@ class TransformComponent : public Component {
     TransformComponent() { this->position.Zero(); }
 
     TransformComponent(int w, int h, int scale = 1) {
-        this->position.x = 340;
-        this->position.y = 230;
+        // intial position of our character
+        this->position.x = 0;
+        this->position.y = 0;
+
         this->width = w;
         this->height = h;
         this->scale = scale;

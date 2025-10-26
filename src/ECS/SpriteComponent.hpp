@@ -57,7 +57,7 @@ class SpriteComponent : public Component {
         // this->currentAnimation = this->transform->velocity.x != 0 ? 1 : 0;
         if (this->transform->velocity.x > 1.1 || this->transform->velocity.x < -1.1) {
             this->currentAnimation = 2;
-            std::cout << "Sprinting!" << std::endl;
+            // std::cout << "Sprinting!" << std::endl;
         } else if (this->transform->velocity.x > 0 || this->transform->velocity.x < 0) {
             this->currentAnimation = 1;
         } else {
@@ -77,13 +77,10 @@ class SpriteComponent : public Component {
         srcRect.x = animation.frameWidth *
                     static_cast<int>((SDL_GetTicks() / animation.speed) % animation.frames);
 
-        // the rect x and y are int. and the transform are floats. these are casted automatically i
-        // dont  know whether i should cast them or not, they just work like t his without issues
-        // though. so i dont think i have to care about it though
-        //
-        // in the videos from Lets Make Games he casts it using static_cast<int>, he says its easier
-        // for debug but i have no idea;
-
+        // the position.x and position.y from transform is moved on the KeyboardController, they're
+        // modified whenever WASD are pressed. The camera x and y are used as offsets so that we can
+        // always make the player be at the center of the screen. note that destRect is where in the
+        // window (renderer) we will be placing our player image (sprite)
         destRect.x = transform->position.x - Game::camera.x;
         destRect.y = transform->position.y - Game::camera.y;
     }

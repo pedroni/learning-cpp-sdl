@@ -17,17 +17,17 @@ class TileComponent : public Component {
     // destRect is where the tile is drawn on the renderer
     SDL_Rect destRect;
 
-    // position here is used to know where they're actually are ON the screen/camera, and not where
-    // they're being drawn. we have the destRect which is the rectangle that it is being drawn on
-    // the rendered(window)
-    Vector2D position;
+    // position here is used to know where they're actually are ON the tile map, and not where
+    // they're being drawn. we have the destRect which is the rectangle that represents where in the
+    // rendered it's being drawn
+    Vector2D tileMapPosition;
 
     TileComponent() {}
     TileComponent(int srcX, int srcY, int posX, int posY, const char *path) {
         this->texture = TextureManager::LoadTexture(path);
 
-        this->position.x = posX;
-        this->position.y = posY;
+        this->tileMapPosition.x = posX;
+        this->tileMapPosition.y = posY;
 
         // src rect means the rectangle that we want to get from our source file.
         // the x and y here, referr to the position that they're in the png (sprite) file
@@ -51,8 +51,10 @@ class TileComponent : public Component {
     void init() override {}
 
     void update() override {
-        destRect.x = position.x - Game::camera.x;
-        destRect.y = position.y - Game::camera.y;
+        // tile position is fixed! it never changes, however we change it on the screen by
+        // calculating from the camera. the camera x and y changes as the player moves.
+        destRect.x = tileMapPosition.x - Game::camera.x;
+        destRect.y = tileMapPosition.y - Game::camera.y;
     }
 
     void draw() override { TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE); }

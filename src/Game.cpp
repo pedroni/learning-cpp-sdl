@@ -11,6 +11,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
+#include "SDL2/SDL_timer.h"
 #include "Vector2D.hpp"
 #include <iostream>
 #include <ostream>
@@ -116,6 +117,7 @@ void Game::update() {
     manager.refresh();
     manager.update();
 
+    // makes the camera follow the player, making it always at the center
     camera.x = player.getComponent<TransformComponent>().position.x - 340;
     camera.y = player.getComponent<TransformComponent>().position.y - 230;
 
@@ -136,6 +138,12 @@ void Game::update() {
     // same, but for height
     if (camera.y > camera.h) {
         camera.y = camera.h;
+    }
+
+    if ((SDL_GetTicks() % 50 == 0)) {
+        std::cout << "Camera: x=" << camera.x << ", y=" << camera.y
+                  << ", Player: x=" << player.getComponent<TransformComponent>().position.x
+                  << ", y=" << player.getComponent<TransformComponent>().position.y << std::endl;
     }
 
     for (int i = 0; i < this->colliders.size(); i++) {
