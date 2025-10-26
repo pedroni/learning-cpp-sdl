@@ -17,6 +17,7 @@
 
 SDL_Renderer *Game::renderer;
 SDL_Event *Game::event = new SDL_Event();
+bool Game::isRunning = true;
 
 Manager manager;
 
@@ -29,6 +30,10 @@ const char *mapFile = "assets/MapAssets/terrain_ss.png";
 
 Game::Game() {}
 Game::~Game() {}
+
+std::vector<Entity *> &tiles = manager.getGroup(GroupLabels::GROUP_MAP);
+std::vector<Entity *> &players = manager.getGroup(GroupLabels::GROUP_PLAYERS);
+std::vector<Entity *> &enemies = manager.getGroup(GroupLabels::GROUP_ENEMIES);
 
 void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullScreen) {
     int flags = 0;
@@ -79,7 +84,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     std::vector<Animation> playerAnimations;
     playerAnimations.push_back(Animation("assets/Knight_1/Idle.png", 4, 128, 175));
     playerAnimations.push_back(Animation("assets/Knight_1/Walk.png", 8, 128, 200));
-    playerAnimations.push_back(Animation("assets/Knight_1/Run.png", 7, 128, 175));
+    playerAnimations.push_back(Animation("assets/Knight_1/Run.png", 7, 128, 125));
     player.addComponent<SpriteComponent>(playerAnimations);
 
     player.addComponent<KeyboardController>();
@@ -108,24 +113,27 @@ void Game::handleEvents() {
 void Game::update() {
     manager.refresh();
     manager.update();
+
+    TransformComponent &playerTransform = player.getComponent<TransformComponent>();
+
+    Vector2D playerVelocity = playerTransform.velocity;
+    int playerSpeed = playerTransform.speed;
+
+    for (int i = 0; i < tiles.size(); i++) {
+        tiles[i]->getComponent<TileComponent>().destRect.x += -(playerVelocity.x * playerSpeed);
+        tiles[i]->getComponent<TileComponent>().destRect.y += -(playerVelocity.y * playerSpeed);
+    }
+
     for (int i = 0; i < this->colliders.size(); i++) {
         if (Collision::AABB(player.getComponent<ColliderComponent>(), *this->colliders[i])) {
             // player.getComponent<TransformComponent>().velocity * -1;
         }
         // std::cout << "hit something" << std::endl;
     }
-
-    if (player.getComponent<TransformComponent>().position.x > 1000) {
-        player.getComponent<TransformComponent>().position.x = 0;
-    }
 }
 
 void Game::render() {
     SDL_RenderClear(this->renderer);
-
-    std::vector<Entity *> &tiles = manager.getGroup(GroupLabels::GROUP_MAP);
-    std::vector<Entity *> &players = manager.getGroup(GroupLabels::GROUP_PLAYERS);
-    std::vector<Entity *> &enemies = manager.getGroup(GroupLabels::GROUP_ENEMIES);
 
     // this is where you render stuff, images, sprites
 

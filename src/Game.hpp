@@ -32,9 +32,10 @@ class Game {
 
     static std::vector<ColliderComponent *> colliders;
 
+    static bool isRunning;
+
   private:
     int cnt;
-    bool isRunning;
     SDL_Window *window;
 };
 

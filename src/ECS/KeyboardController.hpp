@@ -32,11 +32,11 @@ class KeyboardController : public Component {
         }
 
         if (keyboardState[SDL_SCANCODE_A]) {
-            this->transform->velocity.x = keyboardState[SDL_SCANCODE_LSHIFT] == 0 ? -1 : -2.2;
+            this->transform->velocity.x = keyboardState[SDL_SCANCODE_LSHIFT] == 0 ? -1 : -2;
         }
 
         if (keyboardState[SDL_SCANCODE_D]) {
-            this->transform->velocity.x = keyboardState[SDL_SCANCODE_LSHIFT] == 0 ? 1 : 2.2;
+            this->transform->velocity.x = keyboardState[SDL_SCANCODE_LSHIFT] == 0 ? 1 : 2;
         }
 
         if (keyboardState[SDL_SCANCODE_W] == 0 && keyboardState[SDL_SCANCODE_S] == 0) {
@@ -45,6 +45,10 @@ class KeyboardController : public Component {
 
         if (keyboardState[SDL_SCANCODE_A] == 0 && keyboardState[SDL_SCANCODE_D] == 0) {
             this->transform->velocity.x = 0;
+        }
+
+        if (keyboardState[SDL_SCANCODE_ESCAPE]) {
+            Game::isRunning = false;
         }
     }
 };
