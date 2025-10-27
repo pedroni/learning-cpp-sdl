@@ -3,6 +3,7 @@
 #include "ECS/ColliderComponent.hpp"
 #include "ECS/ECS.hpp"
 #include "ECS/TileComponent.hpp"
+#include "ECS/TransformComponent.hpp"
 #include "Game.hpp"
 #include "TextureManager.hpp"
 #include <cstdlib>
@@ -83,11 +84,13 @@ void Map::render() {
 
             if (tile == '1') {
                 Entity &tileCollider = manager.addEntity();
-                tileCollider.addComponent<ColliderComponent>(
-                    "terrain",
+                tileCollider.addComponent<TransformComponent>(
                     x * scaledSize,
                     y * scaledSize,
+                    scaledSize,
                     scaledSize);
+
+                tileCollider.addComponent<ColliderComponent>("terrain");
 
                 tileCollider.addGroup(GroupLabels::GROUP_COLLIDERS);
             }

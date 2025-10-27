@@ -78,7 +78,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     playerAnimations.push_back(Animation("player_idle", 4, 128, 175));
     playerAnimations.push_back(Animation("player_walk", 8, 128, 200));
     playerAnimations.push_back(Animation("player_run", 7, 128, 125));
-    player.addComponent<ColliderComponent>("player");
+
+    // collision size is different than our sprite/transform size
+    player.addComponent<ColliderComponent>("player", 42, 64, 14, 64);
     player.addComponent<SpriteComponent>(playerAnimations);
     player.addComponent<KeyboardController>();
     player.addGroup(GroupLabels::GROUP_PLAYERS);
@@ -105,22 +107,20 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    SDL_Rect &playerCollider = player.getComponent<ColliderComponent>().collider;
+    ColliderComponent &playerCollider = player.getComponent<ColliderComponent>();
     Vector2D previousPlayerPosition = player.getComponent<TransformComponent>().position;
 
     manager.refresh();
     manager.update();
 
     for (int i = 0; i < colliders.size(); i++) {
-        SDL_Rect colliderRect = colliders[i]->getComponent<ColliderComponent>().collider;
-        if (Collision::AABB(playerCollider, colliderRect)) {
+        if (Collision::AABB(playerCollider, colliders[i]->getComponent<ColliderComponent>())) {
             player.getComponent<TransformComponent>().position = previousPlayerPosition;
         }
     }
 
     for (int i = 0; i < projectiles.size(); i++) {
-        SDL_Rect projectileRect = projectiles[i]->getComponent<ColliderComponent>().collider;
-        if (Collision::AABB(playerCollider, projectileRect)) {
+        if (Collision::AABB(playerCollider, projectiles[i]->getComponent<ColliderComponent>())) {
             std::cout << "Hit the player! OMG!" << std::endl;
             projectiles[i]->destroy();
         }

@@ -25,7 +25,7 @@ void AssetManager::createProjectile(
     projectile.addComponent<TransformComponent>(position.x, position.y, 35, 17, 1);
     projectile.addComponent<SpriteComponent>(Animation("fireball", 5, 35, 100));
     projectile.addComponent<ProjectileComponent>(range, speed, velocity);
-    projectile.addComponent<ColliderComponent>("fireball", position.x, position.y, 35, 17);
+    projectile.addComponent<ColliderComponent>("fireball");
     projectile.addGroup(GroupLabels::GROUP_PROJECTILES);
 }
 
