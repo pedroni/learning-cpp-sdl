@@ -22,7 +22,11 @@ enum GroupLabels : Group {
     GROUP_MAP,
     GROUP_PLAYERS,
     GROUP_ENEMIES,
-    GROUPS_COLLIDERS,
+    // rename colliders to tile collider or map bounds, it doesn't mean that just because it has a
+    // collider component it is grouped here. this made me confused when I add the projectile
+    // collider
+    GROUP_COLLIDERS,
+    GROUP_PROJECTILES,
 };
 
 inline ComponentID getNewComponentTypeID() {

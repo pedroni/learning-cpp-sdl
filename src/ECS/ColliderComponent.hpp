@@ -28,6 +28,15 @@ class ColliderComponent : public Component {
         collider.w = collider.h = size;
     }
 
+    ColliderComponent(std::string tag, int posX, int posY, int width, int height) {
+        this->tag = tag;
+
+        collider.x = posX;
+        collider.y = posY;
+        collider.w = width;
+        collider.h = height;
+    }
+
     void init() override {
         if (!this->entity->hasComponent<TransformComponent>()) {
             this->entity->addComponent<TransformComponent>();
@@ -40,8 +49,7 @@ class ColliderComponent : public Component {
     }
 
     void update() override {
-        // this should probaly be casted, because collider is int and then in the position of the
-        // transform its float
+        // tag should probably be something else, like "not movable"
         if (tag != "terrain") {
             this->collider.x = transform->position.x;
             this->collider.y = transform->position.y;

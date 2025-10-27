@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "AssetManager.hpp"
 #include "Collision.hpp"
 #include "ECS/Animation.hpp"
 #include "ECS/ColliderComponent.hpp"
@@ -15,12 +16,14 @@
 #include <ostream>
 #include <vector>
 
+Manager manager;
+
 SDL_Renderer *Game::renderer;
 SDL_Event *Game::event = new SDL_Event();
 bool Game::isRunning = true;
 SDL_Rect Game::camera = {0, 0, 800, 640};
 
-Manager manager;
+AssetManager *Game::assets = new AssetManager(&manager);
 
 Entity &player = manager.addEntity();
 // Entity &wall = manager.addEntity();
@@ -31,7 +34,8 @@ Game::~Game() {}
 std::vector<Entity *> &tiles = manager.getGroup(GroupLabels::GROUP_MAP);
 std::vector<Entity *> &players = manager.getGroup(GroupLabels::GROUP_PLAYERS);
 std::vector<Entity *> &enemies = manager.getGroup(GroupLabels::GROUP_ENEMIES);
-std::vector<Entity *> &colliders = manager.getGroup(GroupLabels::GROUPS_COLLIDERS);
+std::vector<Entity *> &colliders = manager.getGroup(GroupLabels::GROUP_COLLIDERS);
+std::vector<Entity *> &projectiles = manager.getGroup(GroupLabels::GROUP_PROJECTILES);
 
 void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullScreen) {
     int flags = 0;
@@ -56,21 +60,30 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         }
     }
 
-    Map map("assets/MapAssets/terrain_ss.png", "assets/MapAssets/map.map", 25, 20, 32, 2);
+    assets->add("terrain", "assets/MapAssets/terrain_ss.png");
+
+    assets->add("player_idle", "assets/Knight_1/Idle.png");
+    assets->add("player_walk", "assets/Knight_1/Walk.png");
+    assets->add("player_run", "assets/Knight_1/Run.png");
+
+    assets->add("fireball", "assets/projectiles/fireball-sheet.png");
+
+    Map map("terrain", "assets/MapAssets/map.map", 25, 20, 32, 2);
     map.render();
 
     // spawns the player at 540x430 coordinates
     player.addComponent<TransformComponent>(540, 430, 64, 128);
 
     std::vector<Animation> playerAnimations;
-    playerAnimations.push_back(Animation("assets/Knight_1/Idle.png", 4, 128, 175));
-    playerAnimations.push_back(Animation("assets/Knight_1/Walk.png", 8, 128, 200));
-    playerAnimations.push_back(Animation("assets/Knight_1/Run.png", 7, 128, 125));
-    player.addComponent<SpriteComponent>(playerAnimations);
-
-    player.addComponent<KeyboardController>();
+    playerAnimations.push_back(Animation("player_idle", 4, 128, 175));
+    playerAnimations.push_back(Animation("player_walk", 8, 128, 200));
+    playerAnimations.push_back(Animation("player_run", 7, 128, 125));
     player.addComponent<ColliderComponent>("player");
+    player.addComponent<SpriteComponent>(playerAnimations);
+    player.addComponent<KeyboardController>();
     player.addGroup(GroupLabels::GROUP_PLAYERS);
+
+    assets->createProjectile("fireball", Vector2D(300, 430), Vector2D(1, 0), 1000, 5);
 
     // wall.addComponent<TransformComponent>(300.0f, 300.0f, 20, 200, 1);
     // wall.addComponent<SpriteComponent>("assets/dirt.png");
@@ -102,6 +115,14 @@ void Game::update() {
         SDL_Rect colliderRect = colliders[i]->getComponent<ColliderComponent>().collider;
         if (Collision::AABB(playerCollider, colliderRect)) {
             player.getComponent<TransformComponent>().position = previousPlayerPosition;
+        }
+    }
+
+    for (int i = 0; i < projectiles.size(); i++) {
+        SDL_Rect projectileRect = projectiles[i]->getComponent<ColliderComponent>().collider;
+        if (Collision::AABB(playerCollider, projectileRect)) {
+            std::cout << "Hit the player! OMG!" << std::endl;
+            projectiles[i]->destroy();
         }
     }
 
@@ -167,6 +188,10 @@ void Game::render() {
 
     for (int i = 0; i < colliders.size(); i++) {
         colliders[i]->draw();
+    }
+
+    for (int i = 0; i < projectiles.size(); i++) {
+        projectiles[i]->draw();
     }
 
     SDL_RenderPresent(this->renderer);

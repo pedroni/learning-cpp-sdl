@@ -2,11 +2,13 @@
 #ifndef Map_hpp
 #define Map_hpp
 
+#include "AssetManager.hpp"
 #include "SDL2/SDL_render.h"
 #include <string>
+
 class Map {
   public:
-    Map(const char *texturePath,
+    Map(std::string assetId,
         std::string coordinatesPath,
         int sizeX,
         int sizeY,

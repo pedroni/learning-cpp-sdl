@@ -1,23 +1,26 @@
 #include "Map.hpp"
+#include "AssetManager.hpp"
 #include "ECS/ColliderComponent.hpp"
 #include "ECS/ECS.hpp"
 #include "ECS/TileComponent.hpp"
+#include "Game.hpp"
 #include "TextureManager.hpp"
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 // this smells so bad... is there a proper way to access the manager?
 extern Manager manager;
 
 Map::Map(
-    const char *texturePath,
+    AssetId assetId,
     std::string coordinatesPath,
     int sizeX,
     int sizeY,
     int tileSize,
     int mapScale) {
-    this->texture = TextureManager::load(texturePath);
+    this->texture = Game::assets->get(assetId);
     this->coordinatesPath = coordinatesPath;
     this->sizeX = sizeX;
     this->sizeY = sizeY;
@@ -86,7 +89,7 @@ void Map::render() {
                     y * scaledSize,
                     scaledSize);
 
-                tileCollider.addGroup(GroupLabels::GROUPS_COLLIDERS);
+                tileCollider.addGroup(GroupLabels::GROUP_COLLIDERS);
             }
 
             // ignore comma

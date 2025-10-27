@@ -2,6 +2,7 @@
 #ifndef Game_hpp
 #define Game_hpp
 
+#include "AssetManager.hpp"
 #include "SDL2/SDL_events.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
@@ -30,6 +31,8 @@ class Game {
 
     static bool isRunning;
     static SDL_Rect camera;
+
+    static AssetManager *assets;
 
   private:
     int cnt;
