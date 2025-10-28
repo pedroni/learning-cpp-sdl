@@ -5,6 +5,7 @@
 #include "ECS/ColliderComponent.hpp"
 #include "ECS/ECS.hpp"
 #include "ECS/KeyboardController.hpp"
+#include "ECS/PlayerComponent.hpp"
 #include "ECS/SpriteComponent.hpp"
 #include "ECS/TransformComponent.hpp"
 #include "Map.hpp"
@@ -82,7 +83,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     // collision size is different than our sprite/transform size
     player.addComponent<ColliderComponent>("player", 42, 64, 14, 64);
     player.addComponent<SpriteComponent>(playerAnimations);
+    player.addComponent<PlayerComponent>();
     player.addComponent<KeyboardController>();
+
     player.addGroup(GroupLabels::GROUP_PLAYERS);
 
     assets->createProjectile("fireball", Vector2D(300, 430), Vector2D(1, 0), 1000, 5);
