@@ -1,5 +1,7 @@
 #include "Game.hpp"
 #include "SDL2/SDL_timer.h"
+#include <iostream>
+#include <ostream>
 
 Game *game = NULL;
 
@@ -11,7 +13,7 @@ int main(int argc, const char *argv[]) {
     const int frameDelay = 1000 / heartbeat;
 
     unsigned int previous = SDL_GetTicks();
-    unsigned int lag = 0;
+    double lag = 0;
 
     while (game->running()) {
         unsigned int current = SDL_GetTicks();
@@ -25,7 +27,8 @@ int main(int argc, const char *argv[]) {
             lag -= frameDelay;
         }
 
-        game->render();
+        double alpha = lag / frameDelay;
+        game->render(alpha);
     }
 
     game->clean();

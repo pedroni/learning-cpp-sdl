@@ -66,7 +66,7 @@ class ColliderComponent : public Component {
         this->destRect.y = collider.y - Game::camera.y;
     }
 
-    void draw() override {
+    void draw(double alpha) override {
         // comment this out to remove the debug texture
         TextureManager::draw(this->texture, this->srcRect, this->destRect, SDL_FLIP_NONE);
     }

@@ -18,7 +18,7 @@ class Game {
 
     void handleEvents();
     void update();
-    void render();
+    void render(double alpha);
     void clean();
 
     bool running();

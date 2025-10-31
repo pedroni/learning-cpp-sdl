@@ -76,7 +76,7 @@ class Component {
     // to override the original class implmenentation
     virtual void init() {}
     virtual void update() {}
-    virtual void draw() {}
+    virtual void draw(double alpha) {}
 
     virtual ~Component() {}
 };
@@ -112,9 +112,9 @@ class Entity {
         }
     }
 
-    void draw() {
+    void draw(double alpha) {
         for (std::size_t i = 0; i < this->components.size(); i++) {
-            components[i]->draw();
+            components[i]->draw(alpha);
         }
     }
 
@@ -171,9 +171,9 @@ class Manager {
         }
     }
 
-    void draw() {
+    void draw(double alpha) {
         for (size_t i = 0; i < entities.size(); i++) {
-            entities[i]->draw();
+            entities[i]->draw(alpha);
         }
     }
 

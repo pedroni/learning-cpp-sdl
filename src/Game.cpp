@@ -159,7 +159,7 @@ void Game::update() {
     // }
 }
 
-void Game::render() {
+void Game::render(double alpha) {
     SDL_RenderClear(this->renderer);
 
     // this is where you render stuff, images, sprites
@@ -178,23 +178,23 @@ void Game::render() {
     // manager.draw();
 
     for (int i = 0; i < tiles.size(); i++) {
-        tiles[i]->draw();
+        tiles[i]->draw(alpha);
     }
 
     for (int i = 0; i < players.size(); i++) {
-        players[i]->draw();
+        players[i]->draw(alpha);
     }
 
     for (int i = 0; i < enemies.size(); i++) {
-        enemies[i]->draw();
+        enemies[i]->draw(alpha);
     }
 
     for (int i = 0; i < colliders.size(); i++) {
-        colliders[i]->draw();
+        colliders[i]->draw(alpha);
     }
 
     for (int i = 0; i < projectiles.size(); i++) {
-        projectiles[i]->draw();
+        projectiles[i]->draw(alpha);
     }
 
     SDL_RenderPresent(this->renderer);

@@ -86,7 +86,7 @@ class SpriteComponent : public Component {
         destRect.y = transform->position.y - Game::camera.y;
     }
 
-    void draw() override {
+    void draw(double alpha) override {
         TextureManager::draw(
             this->currentAnimation.texture,
             this->srcRect,

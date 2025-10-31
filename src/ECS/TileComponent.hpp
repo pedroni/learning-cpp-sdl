@@ -64,7 +64,9 @@ class TileComponent : public Component {
         destRect.y = worldPosition.y - Game::camera.y;
     }
 
-    void draw() override { TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE); }
+    void draw(double alpha) override {
+        TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+    }
 };
 
 #endif
