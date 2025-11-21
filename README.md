@@ -1,5 +1,7 @@
 # SDL2 Learning
 
+More on: https://github.com/pedroni/gamedev/
+
 https://www.youtube.com/watch?v=8Slu8vYPomg
 
 ## Demo
